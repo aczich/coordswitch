@@ -40,7 +40,7 @@ DD_to_UTM <-  function(x, y, ellipsoid = "WGS84", return = "all") {
   
   res <- sp::spTransform(xy, sp::CRS(paste0("+proj=utm +zone=", zone, " ellps=", ellipsoid))) %>%
     as.data.frame() %>% 
-    set_names(c("easting", "northing")) %>% 
+    purrr::set_names(c("easting", "northing")) %>% 
     dplyr::select(easting, northing) %>%
     dplyr::mutate(zone = zone)
   

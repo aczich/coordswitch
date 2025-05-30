@@ -26,7 +26,7 @@ UTM_to_DD <-  function(x, y, zone, ellipsoid = "WGS84", return = "all") {
   sp::proj4string(utm) <- sp::CRS(paste0("+proj=utm +zone=", zone, " +ellps=", ellipsoid))
   utm <- sp::spTransform(utm, sp::CRS(paste0("+proj=longlat +datum=", ellipsoid))) %>%
     as.data.frame() %>%
-    set_names(c("lon", "lat"))
+    purrr::set_names(c("lon", "lat"))
   
   if(return == "all") {
     return(data.frame(lat_DD = utm$lat, lon_DD = utm$lon))

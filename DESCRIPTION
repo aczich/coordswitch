@@ -1,7 +1,9 @@
-Package: coordswitch
-Title: Coordinate Conversion
+Package: coordswitchr
+Title: Coordinate System Conversion Tools
 Version: 0.1
-Authors@R: person("Team", "Kraken", email = "quinn.dea@gmail.com", role = "cre")
+Authors@R: c(
+    person("Andrew", "Czich", email = "andrew.czich@gmail.com", role = c("aut", "cre")),
+    person("Danielle", "Quinn", email = "quinn.dea@gmail.com", role = "ctb"))
 Description: Convert between coordinate types.
 License: GPL-2
 Encoding: UTF-8
@@ -16,4 +18,5 @@ Imports:
     glue,
     rlang,
     tidyselect,
-    rgdal
+    purrr,
+    sf

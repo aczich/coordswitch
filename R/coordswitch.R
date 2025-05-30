@@ -33,7 +33,7 @@ coordswitch <- function(data, x = "lon", y = "lat",
   if(!from %in% c("DD", "DMS", "DDM", "UTM")) stop("Invalid from argument; please specify DD, DMS, DDM, or UTM")
   if(!from %in% c("all", "DD", "DMS", "DDM", "UTM")) stop("Invalid from argument; please specify all, DD, DMS, DDM, or UTM")
   if(from == "UTM" & !zone %in% names(data)) stop("zone variable missing from data")
-  list.files("R", pattern = "function", full.names = T) %>% walk(source)
+  list.files("R", pattern = "function", full.names = T) %>% purrr::walk(source)
   #### Create Reference Table 
   distinctData <- data %>%
     dplyr::rename(x = tidyselect::all_of(x), y = tidyselect::all_of(y)) %>%
@@ -56,11 +56,6 @@ coordswitch <- function(data, x = "lon", y = "lat",
   to_utm_functions <- use_functions[stringr::str_detect(use_functions, "to_UTM")]
   from_utm_functions <- use_functions[stringr::str_detect(use_functions, "UTM_to")]
   
-  # Convert character names to actual functions for if else in pipe
-  non_utm_fun <- map(non_utm_functions, get)
-  to_utm_fun <- map(to_utm_functions, get)
-  from_utm_fun <- map(from_utm_functions, get)
-  
   
   
   #### Apply Conversion Functions 
@@ -68,42 +63,63 @@ coordswitch <- function(data, x = "lon", y = "lat",
     dplyr::rowwise() %>%
     # Apply any functions associated with non-UTM conversions
     {if (length(non_utm_functions) > 0)
-      dplyr::mutate(.,
+    {if("DD_to_DDM" %in% non_utm_functions){
+        dplyr::mutate(.,
                     lon_DDM = DD_to_DDM(x, axis = "horizontal"),
-                    lat_DDM = DD_to_DDM(y, axis = "vertical"),
+                    lat_DDM = DD_to_DDM(y, axis = "vertical"))
+    }else if("DD_to_DMS" %in% non_utm_functions){
+        dplyr::mutate(.,
                     lon_DMS = DD_to_DMS(x, axis = "horizontal"),
                     lat_DMS = DD_to_DMS(y, axis = "vertical"))
-      else .} %>%
+    }else if("DDM_to_DD" %in% non_utm_functions){
+        dplyr::mutate(.,
+                      lon_DD = DDM_to_DD(x, axis = "horizontal"),
+                      lat_DD = DDM_to_DD(y, axis = "vertical"))
+      }else if("DDM_to_DMS" %in% non_utm_functions){
+        dplyr::mutate(.,
+                      lon_DMS = DDM_to_DMS(x, axis = "horizontal"),
+                      lat_DMS = DDM_to_DMS(y, axis = "vertical"))
+      }else if("DMS_to_DD" %in% non_utm_functions){
+        dplyr::mutate(.,
+                      lon_DD = DMS_to_DD(x, axis = "horizontal"),
+                      lat_DD = DMS_to_DD(y,  axis = "vertical"))
+      }else if("DMS_to_DDM" %in% non_utm_functions){
+        dplyr::mutate(.,
+                      lon_DDM = DMS_to_DDM(x, axis = "horizontal"),
+                      lat_DDM = DMS_to_DDM(y, axis = "vertical"))
+      }
+      }else .} %>%
     # Apply any functions associated with conversions 'to' UTM
     {if (length(to_utm_functions) > 0)
-      {if(to_utm_functions %in% "DD_to_UTM"){
+      {if("DD_to_UTM" %in% to_utm_functions){
       dplyr::mutate(.,
                     easting = DD_to_UTM(x, y, return = "easting"),
                     northing = DD_to_UTM(x, y, return = "northing"),
                     zone = DD_to_UTM(x, y, return = "zone"))
-    }else if(to_utm_functions %in% "DDM_to_UTM"){
+    }else if("DDM_to_UTM" %in% to_utm_functions){
       dplyr::mutate(.,
                     easting = DDM_to_UTM(x, y, return = "easting"),
                     northing = DDM_to_UTM(x, y, return = "northing"),
                     zone = DDM_to_UTM(x, y, return = "zone"))
-    }else if(to_utm_functions %in% "DMS_to_UTM"){
+    }else if("DMS_to_UTM" %in% to_utm_functions){
       dplyr::mutate(.,
                     easting = DMS_to_UTM(x, y, return = "easting"),
                     northing = DMS_to_UTM(x, y, return = "northing"),
                     zone = DMS_to_UTM(x, y, return = "zone"))
     } 
       }else .} %>%
+  
     # Apply any functions associated with conversions 'from' UTM
     {if (length(from_utm_functions) > 0)
-      {if(from_utm_functions %in% "UTM_to_DD"){
+      {if("UTM_to_DD" %in% from_utm_functions){
         dplyr::mutate(.,
                       lon_DD = UTM_to_DD(x, y, zone = zone, return = "lon"),
                       lat_DD = UTM_to_DD(x, y, zone = zone, return = "lat"))
-      }else if(from_utm_functions %in% "UTM_to_DDM"){
+      }else if("UTM_to_DDM" %in% from_utm_functions){
         dplyr::mutate(.,
                       lon_DDM = UTM_to_DDM(x, y,  zone = zone, return = "lon"),
                       lat_DDM = UTM_to_DDM(x, y,  zone = zone, return = "lat"))
-      }else if(from_utm_functions %in% "UTM_to_DMS"){
+      }else if("UTM_to_DMS" %in% from_utm_functions){
         dplyr::mutate(.,
                       lon_DMS = UTM_to_DMS(x, y,  zone = zone, return = "lon"),
                       lat_DMS = UTM_to_DMS(x, y,  zone = zone,return = "lat"))

@@ -3,19 +3,19 @@ require(tidyverse)
 require(glue)
 require(stringr)
 
-source("CoordinateConversion/R/function_DD_to_DDM.R")
-source("CoordinateConversion/R/function_DD_to_DMS.R")
-source("CoordinateConversion/R/function_DD_to_UTM.R")
-source("CoordinateConversion/R/function_DDM_to_DD.R")
-source("CoordinateConversion/R/function_DDM_to_DMS.R")
-source("CoordinateConversion/R/function_DDM_to_UTM.R")
-source("CoordinateConversion/R/function_DMS_to_DD.R")
-source("CoordinateConversion/R/function_DMS_to_DDM.R")
-source("CoordinateConversion/R/function_DMS_to_UTM.R")
-source("CoordinateConversion/R/function_UTM_to_DD.R")
-source("CoordinateConversion/R/function_UTM_to_DMS.R")
-source("CoordinateConversion/R/function_UTM_to_DDM.R")
-source("CoordinateConversion/R/sp_convert.R")
+source("R/function_DD_to_DDM.R")
+source("R/function_DD_to_DMS.R")
+source("R/function_DD_to_UTM.R")
+source("R/function_DDM_to_DD.R")
+source("R/function_DDM_to_DMS.R")
+source("R/function_DDM_to_UTM.R")
+source("R/function_DMS_to_DD.R")
+source("R/function_DMS_to_DDM.R")
+source("R/function_DMS_to_UTM.R")
+source("R/function_UTM_to_DD.R")
+source("R/function_UTM_to_DMS.R")
+source("R/function_UTM_to_DDM.R")
+source("R/coordswitch.R")
 
 # TO DO ----
 # Add supressWarning()
@@ -27,45 +27,45 @@ testdata_DD <- data.frame(lon = c( -63, -89.2345, 4.5, 4.5),
                           lat = c(44, 23.34, 57.3246, 57.3246),
                           record = c("A", "B", "C", "D"))
 
-sp_convert(testdata_DD) # Works
-sp_convert(testdata_DD, to = "DMS") # Works
-sp_convert(testdata_DD, to = "DDM") # Works
-sp_convert(testdata_DD, to = "UTM") # Works
-sp_convert(testdata_DD, to = c("DDM", "DMS")) # Works
-sp_convert(testdata_DD, to = c("DDM", "DMS", "DD")) # Works
+coordswitch(testdata_DD) # Works
+coordswitch(testdata_DD, to = "DMS") # Works
+coordswitch(testdata_DD, to = "DDM") # Works
+coordswitch(testdata_DD, to = "UTM") # Works
+coordswitch(testdata_DD, to = c("DDM", "DMS")) # Works
+coordswitch(testdata_DD, to = c("DDM", "DMS", "DD")) # Works
 
-sp_convert(testdata_DD, from = "DD", to = "DMS")
-sp_convert(testdata_DD, from = "DD", to = "all")
+coordswitch(testdata_DD, from = "DD", to = "DMS")
+coordswitch(testdata_DD, from = "DD", to = "all")
 
 # From DDM
-testdata_DDM <- sp_convert(testdata_DD, to = "DDM") %>%
+testdata_DDM <- coordswitch(testdata_DD, to = "DDM") %>%
   select(lat = lat_DDM, lon = lon_DDM)
 
-sp_convert(testdata_DDM, from = "DDM") # Works
-sp_convert(testdata_DDM, from = "DDM", to = "DD") # Works
-sp_convert(testdata_DDM, from = "DDM", to = "DMS") # Works
-sp_convert(testdata_DDM, from = "DDM", to = "UTM") # Works
-sp_convert(testdata_DDM, from = "DDM", to = c("DMS", "DD")) # Works
-sp_convert(testdata_DDM, from = "DDM", to = c("DMS", "DD", "DDM")) # Works
+coordswitch(testdata_DDM, from = "DDM") # Works
+coordswitch(testdata_DDM, from = "DDM", to = "DD") # Works
+coordswitch(testdata_DDM, from = "DDM", to = "DMS") # Works
+coordswitch(testdata_DDM, from = "DDM", to = "UTM") # Works
+coordswitch(testdata_DDM, from = "DDM", to = c("DMS", "DD")) # Works
+coordswitch(testdata_DDM, from = "DDM", to = c("DMS", "DD", "DDM")) # Works
 
 # From DMS
-testdata_DMS <- sp_convert(testdata_DD, to = "DMS") %>%
+testdata_DMS <- coordswitch(testdata_DD, to = "DMS") %>%
   select(lat = lat_DMS, lon = lon_DMS)
 
-sp_convert(testdata_DMS, from = "DMS") # Works
-sp_convert(testdata_DMS, from = "DMS", to = "DD") # Works
-sp_convert(testdata_DMS, from = "DMS", to = "DDM") # Works
-sp_convert(testdata_DMS, from = "DMS", to = "UTM") # Works
+coordswitch(testdata_DMS, from = "DMS") # Works
+coordswitch(testdata_DMS, from = "DMS", to = "DD") # Works
+coordswitch(testdata_DMS, from = "DMS", to = "DDM") # Works
+coordswitch(testdata_DMS, from = "DMS", to = "UTM") # Works
 
 # From UTM
-testdata_UTM <- sp_convert(testdata_DD, to = "UTM") %>%
+testdata_UTM <- coordswitch(testdata_DD, to = "UTM") %>%
   select(easting, northing, zone)
 
-sp_convert(testdata_UTM, x = "easting", y = "northing", from = "UTM") # Works
-sp_convert(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = "DD") # Works
-sp_convert(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = "DDM") # Works
-sp_convert(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = "DMS") # Works
-sp_convert(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = c("DMS", "DD", "UTM")) # Works
+coordswitch(testdata_UTM, x = "easting", y = "northing", from = "UTM") # Works
+coordswitch(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = "DD") # Works
+coordswitch(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = "DDM") # Works
+coordswitch(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = "DMS") # Works
+coordswitch(testdata_UTM, x = "easting", y = "northing", from = "UTM", to = c("DMS", "DD", "UTM")) # Works
 
 UTM_to_DD(x = 271542.3, y = 2582924, zone = 16, return = "all")
 UTM_to_DD(x = 271542.3, y = 2582924, zone = 16, return = "lat")
@@ -108,5 +108,5 @@ eFish <- read.csv("eFish.csv") %>%
          northing = as.numeric(northing),
          zone = 20)
 
-sp_convert(eFish %>% slice(1:100), x = "easting", y = "northing",
+coordswitch(eFish %>% slice(1:100), x = "easting", y = "northing",
            zone = "zone", from = "UTM", to = "DDM")

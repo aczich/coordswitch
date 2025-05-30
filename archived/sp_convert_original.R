@@ -170,7 +170,7 @@ sp_convert <- function(data = data, x = "longitude", y = "latitude", UTM = "zone
     coordinates(xy) <- c("easting", "northing")
     proj4string(xy) <- CRS("+proj=longlat + datum=WGS84") #change according to ellipsoid
     
-    res <- spTransform(xy, CRS(paste0("+proj=utm +zone=", zone, " +ellps=WGS84")))
+    res <- spTransform(xy, CRS(paste0("+proj=utm +zone=", zone, "ellps=WGS84")))
     en <- as.data.frame(res) %>% select(easting, northing, zone)
     return(en)
   }
@@ -180,7 +180,7 @@ sp_convert <- function(data = data, x = "longitude", y = "latitude", UTM = "zone
     utm <- data.frame(lon = easting, lat = northing)
     coordinates(utm) <- ~lon+lat
     class(utm)
-    proj4string(utm) <- CRS(paste0("+proj=utm +zone=", zone, " +ellps=WGS84"))
+    proj4string(utm) <- CRS(paste0("+proj=utm +zone=", zone, "+ellps=WGS84"))
     utm <- spTransform(utm, CRS("+proj=longlat +datum=WGS84"))
     output <- as.data.frame(utm) %>% select(latitude_DD = lat,longitude_DD = lon)
     
