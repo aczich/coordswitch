@@ -1,9 +1,7 @@
 Functions for converting coordinates are in the folder called R.
 Use the `*_to_*()` functions to convert single values between coordinate systems. Use the 
-`sp_convert()` function to generate conversions for a data frame and append the converted 
-values as new columns. If you use `sp_convert()` you first need to source all of the other 
-functions in. TO DO: Write a line of code to simply source all functions from the R folder 
-into an R session.
+`coordswitch()` function to generate conversions for a data frame and append the converted 
+values as new columns.
 
 Each function is documented using roxygen2 comments within the function script. If you would 
 like to update documentation, make changes there. The processed help files are stored in the 
