@@ -1,0 +1,19 @@
+Package: coordswitch
+Title: Coordinate Conversion
+Version: 0.1
+Authors@R: person("Team", "Kraken", email = "quinn.dea@gmail.com", role = "cre")
+Description: Convert between coordinate types.
+License: GPL-2
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    stringr,
+    tidyr,
+    dplyr,
+    magrittr,
+    sp,
+    glue,
+    rlang,
+    tidyselect,
+    rgdal
